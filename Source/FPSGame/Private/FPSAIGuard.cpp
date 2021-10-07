@@ -12,9 +12,6 @@ AFPSAIGuard::AFPSAIGuard()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-
-	
-	//PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnPawnHeared);	
 }
 
 // Called when the game starts or when spawned
@@ -22,6 +19,7 @@ void AFPSAIGuard::BeginPlay()
 {
 	Super::BeginPlay();
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnPawnSeen);
+	PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnPawnHeared);	
 }
 
 // Called every frame
@@ -40,11 +38,8 @@ void AFPSAIGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 {
-	UE_LOG(LogTemp, Log, TEXT("Actor seen"));
-	if (SeenPawn == nullptr) {
-		UE_LOG(LogTemp, Log, TEXT("Actor is NULL"));
+	if (SeenPawn == nullptr)
 		return;
-	}
 	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 	/*ACharacter* character = Cast<ACharacter>(SeenPawn);
 	if (character) {
@@ -52,11 +47,14 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 	}*/
 }
 
-//void AFPSAIGuard::OnPawnHeared(APawn* HearedPawn, const FVector& PawnLocation, float HearedVolume)
-//{
-//	ACharacter* character = Cast<ACharacter>(HearedPawn);
-//	if (character) {
-//		DrawDebugSphere(GetWorld(), HearedPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
-//	}
-//}
+void AFPSAIGuard::OnPawnHeared(APawn* HearedPawn, const FVector& PawnLocation, float HearedVolume)
+{
+	if (HearedPawn == nullptr)
+		return;
+	UE_LOG(LogTemp, Log, TEXT("Actor Heared"));
+	ACharacter* character = Cast<ACharacter>(HearedPawn);
+	if (character) {
+		//To do stuff
+	}
+}
 

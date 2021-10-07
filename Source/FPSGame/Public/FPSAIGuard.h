@@ -27,8 +27,8 @@ protected:
 	UFUNCTION()
 	void OnPawnSeen(APawn* SeenPawn);
 	
-	/*UFUNCTION()
-	void OnPawnHeared(APawn* HearedPawn, const FVector& PawnLocation, float HearedVolume);*/
+	UFUNCTION()
+	void OnPawnHeared(APawn* HearedPawn, const FVector& PawnLocation, float HearedVolume);
 
 public:	
 	// Called every frame
