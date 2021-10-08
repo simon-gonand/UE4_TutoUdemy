@@ -15,14 +15,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 	USoundBase* SuccessSound;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+	USoundBase* FailedSound;
+
 public:
 
 	AFPSGameMode();
 
 	void CompleteMission(APawn* InstigatorPawn);
 
+	void IncompleteMission(APawn* InstigatorPawn);
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
 	void OnMissionComplete(APawn* InstigatorPawn);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+	void OnMissionIncomplete(APawn* InstigatorPawn);
 };
 
 

@@ -7,6 +7,7 @@
 #include "FPSAIGuard.generated.h"
 
 class UPawnSensingComponent;
+class AFPSGameMode;
 
 UCLASS()
 class FPSGAME_API AFPSAIGuard : public ACharacter
@@ -21,6 +22,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	FRotator OriginalRotation;
+	FTimerHandle TimerHandle_ResetOrientation;
+
 	UPROPERTY(VisibleAnywhere, Category = "Components");
 	UPawnSensingComponent* PawnSensingComp;
 
@@ -28,7 +32,10 @@ protected:
 	void OnPawnSeen(APawn* SeenPawn);
 	
 	UFUNCTION()
-	void OnPawnHeared(APawn* HearedPawn, const FVector& PawnLocation, float HearedVolume);
+	void OnPawnHeared(APawn* HearedPawn, const FVector& NoiseLocation, float HearedVolume);
+
+	UFUNCTION()
+	void ResetRotation();
 
 public:	
 	// Called every frame

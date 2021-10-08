@@ -26,3 +26,14 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn)
 
 	OnMissionComplete(InstigatorPawn);
 }
+
+void AFPSGameMode::IncompleteMission(APawn* InstigatorPawn)
+{
+	if (InstigatorPawn) {
+		InstigatorPawn->DisableInput(nullptr);
+	}
+
+	UGameplayStatics::PlaySound2D(this, FailedSound);
+
+	OnMissionIncomplete(InstigatorPawn);
+}

@@ -4,6 +4,7 @@
 #include "FPSAIGuard.h"
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
+#include "FPSGameMode.h"
 
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
@@ -20,6 +21,7 @@ void AFPSAIGuard::BeginPlay()
 	Super::BeginPlay();
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnPawnHeared);	
+	OriginalRotation = this->GetActorRotation();
 }
 
 // Called every frame
@@ -41,20 +43,38 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 	if (SeenPawn == nullptr)
 		return;
 	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
-	/*ACharacter* character = Cast<ACharacter>(SeenPawn);
+	ACharacter* character = Cast<ACharacter>(SeenPawn);
 	if (character) {
-		
-	}*/
+		AFPSGameMode* gameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
+		if (gameMode) {
+			gameMode->IncompleteMission(character);
+			PawnSensingComp->bSeePawns = false;
+		}
+	}
 }
 
-void AFPSAIGuard::OnPawnHeared(APawn* HearedPawn, const FVector& PawnLocation, float HearedVolume)
+void AFPSAIGuard::OnPawnHeared(APawn* HearedPawn, const FVector& NoiseLocation, float HearedVolume)
 {
 	if (HearedPawn == nullptr)
 		return;
+
 	UE_LOG(LogTemp, Log, TEXT("Actor Heared"));
-	ACharacter* character = Cast<ACharacter>(HearedPawn);
-	if (character) {
-		//To do stuff
-	}
+	
+	
+	FVector Direction = NoiseLocation - this->GetActorLocation();
+	Direction.Normalize();
+	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
+	NewLookAt.Pitch = 0.0f;
+	NewLookAt.Roll = 0.0f;
+
+	SetActorRotation(NewLookAt);
+
+	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
+	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetRotation, 3.0f, false);
+}
+
+void AFPSAIGuard::ResetRotation()
+{
+	SetActorRotation(OriginalRotation);
 }
 
