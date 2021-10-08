@@ -40,14 +40,14 @@ void AFPSAIGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 {
-	if (SeenPawn == nullptr)
+	if (SeenPawn == nullptr || AFPSGameMode::bIsGameOver)
 		return;
 	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 	ACharacter* character = Cast<ACharacter>(SeenPawn);
 	if (character) {
 		AFPSGameMode* gameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
 		if (gameMode) {
-			gameMode->IncompleteMission(character);
+			gameMode->CompleteMission(character, false);
 			PawnSensingComp->bSeePawns = false;
 		}
 	}

@@ -50,7 +50,7 @@ void AFPSExtractedZone::NotifyActorBeginOverlap(AActor* OtherActor)
 		if (player->bIsCarryingObjective) {
 			AFPSGameMode* gameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
 			if (gameMode)
-				gameMode->CompleteMission(player);
+				gameMode->CompleteMission(player, true);
 		}
 		else
 			UGameplayStatics::PlaySound2D(this, ObjectiveMissingSound);

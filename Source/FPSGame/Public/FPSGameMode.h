@@ -12,6 +12,10 @@ class AFPSGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 	USoundBase* SuccessSound;
 
@@ -22,15 +26,12 @@ public:
 
 	AFPSGameMode();
 
-	void CompleteMission(APawn* InstigatorPawn);
-
-	void IncompleteMission(APawn* InstigatorPawn);
+	void CompleteMission(APawn* InstigatorPawn, bool bSuccess);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
-	void OnMissionComplete(APawn* InstigatorPawn);
+	void OnMissionComplete(APawn* InstigatorPawn, bool bSuccess);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
-	void OnMissionIncomplete(APawn* InstigatorPawn);
+	static bool bIsGameOver;
 };
 
 

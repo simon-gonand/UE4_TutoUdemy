@@ -6,6 +6,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
+bool AFPSGameMode::bIsGameOver = false;
+
 AFPSGameMode::AFPSGameMode()
 {
 	// set default pawn class to our Blueprinted character
@@ -16,24 +18,25 @@ AFPSGameMode::AFPSGameMode()
 	HUDClass = AFPSHUD::StaticClass();
 }
 
-void AFPSGameMode::CompleteMission(APawn* InstigatorPawn)
+void AFPSGameMode::BeginPlay()
 {
-	if (InstigatorPawn) {
-		InstigatorPawn->DisableInput(nullptr);
-	}
+	Super::BeginPlay();
 
-	UGameplayStatics::PlaySound2D(this, SuccessSound);
-
-	OnMissionComplete(InstigatorPawn);
+	bIsGameOver = false;
 }
 
-void AFPSGameMode::IncompleteMission(APawn* InstigatorPawn)
+void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bSuccess)
 {
 	if (InstigatorPawn) {
 		InstigatorPawn->DisableInput(nullptr);
 	}
 
-	UGameplayStatics::PlaySound2D(this, FailedSound);
+	if (bSuccess)
+		UGameplayStatics::PlaySound2D(this, SuccessSound);
+	else
+		UGameplayStatics::PlaySound2D(this, FailedSound);
 
-	OnMissionIncomplete(InstigatorPawn);
+	bIsGameOver = true;
+
+	OnMissionComplete(InstigatorPawn, bSuccess);
 }
